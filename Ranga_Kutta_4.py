@@ -77,11 +77,11 @@ def runge_kutta_4(f, y0, t, args=()):
     y[0] = y0
     for i in range(n - 1):
         h = t[i+1] - t[i]
-        k1 = f(y[i], t[i], *args)
-        k2 = f(y[i] + k1 * h / 2., t[i] + h / 2., *args)
-        k3 = f(y[i] + k2 * h / 2., t[i] + h / 2., *args)
-        k4 = f(y[i] + k3 * h, t[i] + h, *args)
-        y[i+1] = y[i] + (h / 6.) * (k1 + 2*k2 + 2*k3 + k4)
+        s1 = h*f(y[i], t[i], *args)
+        s2 = h*f(y[i] + s1 * 1 / 2., t[i] + h / 2., *args)
+        s3 = h*f(y[i] + s2 * 1 / 2., t[i] + h / 2., *args)
+        s4 = h*f(y[i] + s3 * 1, t[i] + h, *args)
+        y[i+1] = y[i] + (1 / 6.) * (s1 + 2*s2 + 2*s3 + s4)
     return y
 
 def ploting_wth_different_interval(b, c, y0):
@@ -93,15 +93,15 @@ def ploting_wth_different_interval(b, c, y0):
         c (float): Coefficient of friction.
         y0 (array-like): Initial state vector.
     """
-    t4_21 = np.linspace(0, 10, 21)
-    ranga_21 = runge_kutta_4(pend, y0, t4_21, args=(b, c))
-    t4_101 = np.linspace(0, 10, 101)
-    ranga_101 = runge_kutta_4(pend, y0, t4_101, args=(b, c))
-    t4_1001 = np.linspace(0, 10, 1001)
-    ranga_1001 = runge_kutta_4(pend, y0, t4_1001, args=(b, c))
-    plt.plot(t4_21, ranga_21[:, 0], label='with 21 points')
-    plt.plot(t4_101, ranga_101[:, 0], label='with 101 points')
-    plt.plot(t4_1001, ranga_1001[:, 0], label='with 1001 points')
+    test_21 = np.linspace(0, 10, 21)
+    runge_21 = runge_kutta_4(pend, y0, test_21, args=(b, c))
+    test_101 = np.linspace(0, 10, 101)
+    runge_101 = runge_kutta_4(pend, y0, test_101, args=(b, c))
+    test_1001 = np.linspace(0, 10, 1001)
+    runge_1001 = runge_kutta_4(pend, y0, test_1001, args=(b, c))
+    plt.plot(test_21, runge_21[:, 0], label='with 21 points')
+    plt.plot(test_101, runge_101[:, 0], label='with 101 points')
+    plt.plot(test_1001, runge_1001[:, 0], label='with 1001 points')
     plt.legend(loc='best')
     plt.xlabel('t')
     plt.grid()
@@ -110,8 +110,6 @@ def ploting_wth_different_interval(b, c, y0):
 b = 0.25
 c = 5.0
 y0 = np.array([np.pi - 0.1, 0.0])
-
-
 
 def benchmark_methods():
     methods = [odeint,rungekutta1, rungekutta2, runge_kutta_4]
@@ -125,8 +123,6 @@ def benchmark_methods():
             sol = method(pend, y0, t, args=(b, c))
             end_time = time.time()
             print("Execution time:", end_time - start_time, "seconds")
-
-
 
 def test_1(n=20):
     """
@@ -167,14 +163,12 @@ def test_3():
     plt.ylabel("y")
     plt.grid()
     plt.show()
-
+    
 while True:
     print("Choose an option:")
     print("1. Compare ODE integration method with scipy library")
     print("2. Plot motion of a pendulum with different time intervals")
-    print("3. Compare different Runge-Kutta methods")
-    print("4. Benchmark Methods")
-    print("5. Exit")
+    print("3. Exit")
     option = input("Enter your choice: ")
 
     if option == "1":
@@ -182,10 +176,6 @@ while True:
     elif option == "2":
         test_2()
     elif option == "3":
-        test_3()
-    elif option == "4":
-        benchmark_methods()
-    elif option == "5":
         print("Exiting...")
         break
     else:

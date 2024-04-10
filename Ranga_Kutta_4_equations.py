@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Initialise step-size variables
 h = 0.1
@@ -34,25 +35,25 @@ b = np.array([1, 2, 2, 1])
 
 # Iterate, computing each K value in turn, then the i+1 step values
 for i in range(N-1):
-    kx[0] = dx(t[i], x[i], y[i], z[i])
-    ky[0] = dy(t[i], x[i], y[i], z[i])
-    kz[0] = dz(t[i], x[i], y[i], z[i])
+    kx[0] = h*dx(t[i], x[i], y[i], z[i])
+    ky[0] = h*dy(t[i], x[i], y[i], z[i])
+    kz[0] = h*dz(t[i], x[i], y[i], z[i])
 
-    kx[1] = dx(t[i] + (h/2), x[i] + (h/2)*kx[0], y[i] + (h/2)*ky[0], z[i] + (h/2)*kz[0])
-    ky[1] = dy(t[i] + (h/2), x[i] + (h/2)*kx[0], y[i] + (h/2)*ky[0], z[i] + (h/2)*kz[0])
-    kz[1] = dz(t[i] + (h/2), x[i] + (h/2)*kx[0], y[i] + (h/2)*ky[0], z[i] + (h/2)*kz[0])
+    kx[1] = h*dx(t[i] + (h/2.), x[i] + (1/2.)*kx[0], y[i] + (1/2.)*ky[0], z[i] + (1/2.)*kz[0])
+    ky[1] = h*dy(t[i] + (h/2.), x[i] + (1/2.)*kx[0], y[i] + (1/2.)*ky[0], z[i] + (1/2.)*kz[0])
+    kz[1] = h*dz(t[i] + (h/2.), x[i] + (1/2.)*kx[0], y[i] + (1/2.)*ky[0], z[i] + (1/2.)*kz[0])
 
-    kx[2] = dx(t[i] + (h/2), x[i] + (h/2)*kx[1], y[i] + (h/2)*ky[1], z[i] + (h/2)*kz[1])
-    ky[2] = dy(t[i] + (h/2), x[i] + (h/2)*kx[1], y[i] + (h/2)*ky[1], z[i] + (h/2)*kz[1])
-    kz[2] = dz(t[i] + (h/2), x[i] + (h/2)*kx[1], y[i] + (h/2)*ky[1], z[i] + (h/2)*kz[1])
+    kx[2] = h*dx(t[i] + (h/2.), x[i] + (1/2.)*kx[1], y[i] + (1/2.)*ky[1], z[i] + (1/2.)*kz[1])
+    ky[2] = h*dy(t[i] + (h/2.), x[i] + (1/2.)*kx[1], y[i] + (1/2.)*ky[1], z[i] + (1/2.)*kz[1])
+    kz[2] = h*dz(t[i] + (h/2.), x[i] + (1/2.)*kx[1], y[i] + (1/2.)*ky[1], z[i] + (1/2.)*kz[1])
 
-    kx[3] = dx(t[i] + h, x[i] + h*kx[2], y[i] + h*ky[2], z[i] + h*kz[2])
-    ky[3] = dy(t[i] + h, x[i] + h*kx[2], y[i] + h*ky[2], z[i] + h*kz[2])
-    kz[3] = dz(t[i] + h, x[i] + h*kx[2], y[i] + h*ky[2], z[i] + h*kz[2])
+    kx[3] = h*dx(t[i] + h, x[i] + kx[2], y[i] + ky[2], z[i] + kz[2])
+    ky[3] = h*dy(t[i] + h, x[i] + kx[2], y[i] + ky[2], z[i] + kz[2])
+    kz[3] = h*dz(t[i] + h, x[i] + kx[2], y[i] + ky[2], z[i] + kz[2])
 
-    x[i+1] = x[i] + (h/6)*np.sum(b*kx)
-    y[i+1] = y[i] + (h/6)*np.sum(b*ky)
-    z[i+1] = z[i] + (h/6)*np.sum(b*kz)
+    x[i+1] = x[i] + (1/6.)*np.sum(b*kx)
+    y[i+1] = y[i] + (1/6.)*np.sum(b*ky)
+    z[i+1] = z[i] + (1/6.)*np.sum(b*kz)
 
 # Group together in one solution matrix
 txyz = np.column_stack((t, x, y, z))
